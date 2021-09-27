@@ -13,7 +13,7 @@ all:
 clean:
 
 exec-docker:
-	docker exec -it ${DOCKER_NAME} bash
+	docker exec -it --user 1000 ${DOCKER_NAME} bash
 
 docker:
 	-docker stop ubuntu20.04-devsuite-debug

@@ -42,7 +42,7 @@ RUN set -x \
       rsync \
       tar \
       python \
-    && apt-get clean 
+    && apt-get clean
 
 RUN ( \
     echo 'LogLevel DEBUG2'; \
@@ -57,7 +57,14 @@ RUN useradd -m ${USER} \
 
 RUN usermod -s /bin/bash ${USER}
 
-RUN mkdir -p /home/${USER}/${PROJECTDIR}/ && chown -R ${USER}:${USER} /home/${USER}/${PROJECTDIR}
+# set root passwd
+RUN echo "root:root" | chpasswd
+
+USER ${USER}
+
+RUN mkdir -p /home/${USER}/${PROJECTDIR}/
+
+USER root
 
 WORKDIR /home/${USER}/${PROJECTDIR}/
 
