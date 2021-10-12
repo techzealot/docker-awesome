@@ -1,23 +1,46 @@
-DOCKER_IMAGE?=techzealot/ubuntu20.04-devsuite
+DOCKER_IMAGE_UBUNTU?=techzealot/ubuntu20.04-devsuite
 
-DOCKER_NAME?=ubuntu20.04-devsuite
+DOCKER_NAME_UBUNTU?=ubuntu20.04-devsuite
 
-MOUNT_DIR?=/Users/techzealot/CLionProjects
+USER_HOME=/Users/techzealot
 
-SSHD_PORT?=2222
+MOUNT_DIR?=${USER_HOME}/CLionProjects
 
-.PHONY: clean all docker build-docker exec-docker
+SSHD_PORT?=22222
+
+.PHONY: clean all 
 
 all: 
 
 clean:
 
-exec-docker:
-	docker exec -it --user 1000 ${DOCKER_NAME} bash
+exec-ubuntu:
+	docker exec -it --user 1000 -w /mnt ${DOCKER_NAME_UBUNTU} bash
 
-docker:
-	-docker stop ubuntu20.04-devsuite-debug
-	docker run --rm -d --cap-add sys_ptrace -p127.0.0.1:${SSHD_PORT}:22 --mount type=bind,source=${MOUNT_DIR},destination=/mnt --name ${DOCKER_NAME} ${DOCKER_IMAGE}
+run-ubuntu:
+	-docker stop ${DOCKER_NAME_UBUNTU}
+	docker run --rm -d --cap-add sys_ptrace -p127.0.0.1:${SSHD_PORT}:22 --mount type=bind,source=${MOUNT_DIR},destination=/mnt --name ${DOCKER_NAME_UBUNTU} ${DOCKER_NAME_UBUNTU}
 
-build-docker:
-	docker build -t ${DOCKER_IMAGE} .
+build-ubuntu:
+	docker build -f Dockerfile -t ${DOCKER_NAME_UBUNTU} .
+
+# docker cp mysql8-test:/etc/mysql/conf/my.cnf ~/docker/mysql8/conf 
+run-mysql8:
+	docker run --name mysql8 \
+	-p 3306:3306 -e MYSQL_ROOT_PASSWORD=root \
+	--mount type=bind,src=${USER_HOME}/docker/mysql8/conf/my.cnf,dst=/etc/mysql/my.cnf \
+	--mount type=bind,src=${USER_HOME}/docker/mysql8/data,dst=/var/lib/mysql \
+	--restart=on-failure:3 \
+	-d mysql:8.0.26
+
+mysql8:
+	docker run --rm --name mysql8-test \
+	-p 3306:3306 -e MYSQL_ROOT_PASSWORD=root \
+	-d mysql:8.0.26
+
+run-mysql5.7:
+	docker run --name mysql5.7 \
+	-p 3307:3306 -e MYSQL_ROOT_PASSWORD=root \
+	--mount type=bind,src=${USER_HOME}/docker/mysql5.7,dst=/mnt \
+	--restart=on-failure:3 \
+	-d mysql:5.7.35
