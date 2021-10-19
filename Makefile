@@ -26,11 +26,10 @@ build-ubuntu:
 
 # docker cp mysql8-test:/etc/mysql/conf/my.cnf ~/docker/mysql8/conf 
 run-mysql8:
-	docker run --name mysql8 \
+	docker run --rm --name mysql8 \
 	-p 3306:3306 -e MYSQL_ROOT_PASSWORD=root \
 	--mount type=bind,src=${USER_HOME}/docker/mysql8/conf/my.cnf,dst=/etc/mysql/my.cnf \
 	--mount type=bind,src=${USER_HOME}/docker/mysql8/data,dst=/var/lib/mysql \
-	--restart=on-failure:3 \
 	-d mysql:8.0.26
 
 mysql8:
@@ -39,8 +38,7 @@ mysql8:
 	-d mysql:8.0.26
 
 run-mysql5.7:
-	docker run --name mysql5.7 \
+	docker run --rm --name mysql5.7 \
 	-p 3307:3306 -e MYSQL_ROOT_PASSWORD=root \
 	--mount type=bind,src=${USER_HOME}/docker/mysql5.7,dst=/mnt \
-	--restart=on-failure:3 \
 	-d mysql:5.7.35
