@@ -50,6 +50,9 @@ RUN set -x \
       rsync \
       tar \
       python \
+      libssl-dev \
+      zlib1g.dev \
+      tree \
     && apt-get clean
 
 RUN ( \
