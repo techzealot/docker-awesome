@@ -19,10 +19,10 @@ exec-ubuntu:
 
 run-ubuntu:
 	-docker stop ${DOCKER_NAME_UBUNTU}
-	docker run --rm -d --cap-add sys_ptrace -p127.0.0.1:${SSHD_PORT}:22 --mount type=bind,source=${MOUNT_DIR},destination=/mnt --name ${DOCKER_NAME_UBUNTU} ${DOCKER_NAME_UBUNTU}
+	docker run --rm -d --cap-add sys_ptrace -p127.0.0.1:${SSHD_PORT}:22 --mount type=bind,source=${MOUNT_DIR},destination=/mnt --name ${DOCKER_NAME_UBUNTU} ${DOCKER_IMAGE_UBUNTU}
 
 build-ubuntu:
-	docker build -f Dockerfile -t ${DOCKER_NAME_UBUNTU} .
+	docker build -f Dockerfile -t ${DOCKER_IMAGE_UBUNTU} .
 
 # docker cp mysql8-test:/etc/mysql/conf/my.cnf ~/docker/mysql8/conf 
 run-mysql8:
